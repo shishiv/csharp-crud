@@ -1,5 +1,3 @@
-// Classe Livro: representa um livro da biblioteca e contém métodos para manipulação no banco de dados.
-// Segue o padrão ensinado nas aulas, com métodos estáticos para cada operação CRUD e relatórios.
 using System;
 using MySql.Data.MySqlClient;
 using CSharpCrud.Data;
@@ -8,34 +6,31 @@ namespace CSharpCrud.Models
 {
     public class Livro
     {
-        // Propriedades do livro, correspondem aos campos da tabela no banco de dados.
         public int Id { get; set; }
-        public string Titulo { get; set; }
-        public string Autor { get; set; }
-        public string Editora { get; set; }
+        public string? Titulo { get; set; }
+        public string? Autor { get; set; }
+        public string? Editora { get; set; }
         public int Ano { get; set; }
-        public string ISBN { get; set; }
-        public string Genero { get; set; }
+        public string? ISBN { get; set; }
+        public string? Genero { get; set; }
 
-        // Preenche os dados do livro a partir de um resultado do banco de dados.
+        // Preenche os dados do livro a partir do resultado do banco.
         public void PreencherLivro(MySqlDataReader resultado)
         {
             this.Id = Convert.ToInt32(resultado["id"]);
-            this.Titulo = resultado["titulo"].ToString();
-            this.Autor = resultado["autor"].ToString();
-            this.Editora = resultado["editora"].ToString();
+            this.Titulo = resultado["titulo"] is DBNull ? "" : resultado["titulo"].ToString();
+            this.Autor = resultado["autor"] is DBNull ? "" : resultado["autor"].ToString();
+            this.Editora = resultado["editora"] is DBNull ? "" : resultado["editora"].ToString();
             this.Ano = Convert.ToInt32(resultado["ano"]);
-            this.ISBN = resultado["isbn"].ToString();
-            this.Genero = resultado["genero"].ToString();
+            this.ISBN = resultado["isbn"] is DBNull ? "" : resultado["isbn"].ToString();
+            this.Genero = resultado["genero"] is DBNull ? "" : resultado["genero"].ToString();
         }
 
-        // Exibe os dados do livro no console, formatado.
         public void Mostrar()
         {
             Console.WriteLine($"{Id}\t{Titulo}\t{Autor}\t{Editora}\t{Ano}\t{ISBN}\t{Genero}");
         }
 
-        // Lista todos os livros cadastrados no banco de dados.
         public static void ListarLivros()
         {
             MySqlConnection cn = BdComum.FazerConexao();
@@ -54,10 +49,9 @@ namespace CSharpCrud.Models
             cn.Close();
         }
 
-        // Insere um novo livro no banco de dados.
+        // Valida e insere um novo livro.
         public static void InserirLivro(Livro novo)
         {
-            // Validação dos campos obrigatórios.
             if (string.IsNullOrWhiteSpace(novo.Titulo) ||
                 string.IsNullOrWhiteSpace(novo.Autor) ||
                 string.IsNullOrWhiteSpace(novo.Editora) ||
@@ -85,7 +79,6 @@ namespace CSharpCrud.Models
             Console.WriteLine("Livro inserido com sucesso!");
         }
 
-        // Busca livros pelo título (parcial).
         public static void BuscarLivro(string titulo)
         {
             MySqlConnection cn = BdComum.FazerConexao();
@@ -112,13 +105,12 @@ namespace CSharpCrud.Models
             cn.Close();
         }
 
-        // Exclui um livro pelo id.
         public static void ExcluirLivro(int id)
         {
             MySqlConnection cn = BdComum.FazerConexao();
             cn.Open();
 
-            // Primeiro, busca o livro para mostrar ao usuário.
+            // Busca o livro para confirmação.
             MySqlCommand cmdBusca = new MySqlCommand("SELECT * FROM livros WHERE id=@id", cn);
             cmdBusca.Parameters.AddWithValue("@id", id);
             MySqlDataReader resultado = cmdBusca.ExecuteReader();
@@ -149,13 +141,11 @@ namespace CSharpCrud.Models
             cn.Close();
         }
 
-        // Altera os dados de um livro existente.
         public static void AlterarLivro(int id)
         {
             MySqlConnection cn = BdComum.FazerConexao();
             cn.Open();
 
-            // Busca o livro pelo id.
             MySqlCommand cmdBusca = new MySqlCommand("SELECT * FROM livros WHERE id=@id", cn);
             cmdBusca.Parameters.AddWithValue("@id", id);
             MySqlDataReader resultado = cmdBusca.ExecuteReader();
@@ -168,7 +158,6 @@ namespace CSharpCrud.Models
                 livro.Mostrar();
                 resultado.Close();
 
-                // Solicita novos dados ao usuário.
                 Console.Write("Novo título (deixe em branco para manter): ");
                 string titulo = Console.ReadLine();
                 if (!string.IsNullOrWhiteSpace(titulo)) livro.Titulo = titulo;
@@ -194,7 +183,6 @@ namespace CSharpCrud.Models
                 string genero = Console.ReadLine();
                 if (!string.IsNullOrWhiteSpace(genero)) livro.Genero = genero;
 
-                // Atualiza no banco.
                 MySqlCommand cmdAlt = new MySqlCommand(
                     "UPDATE livros SET titulo=@titulo, autor=@autor, editora=@editora, ano=@ano, isbn=@isbn, genero=@genero WHERE id=@id", cn);
                 cmdAlt.Parameters.AddWithValue("@titulo", livro.Titulo);
@@ -216,7 +204,6 @@ namespace CSharpCrud.Models
             cn.Close();
         }
 
-        // Relatório: mostra a quantidade total de livros cadastrados.
         public static void QuantidadeTotalLivros()
         {
             MySqlConnection cn = BdComum.FazerConexao();
@@ -227,7 +214,6 @@ namespace CSharpCrud.Models
             cn.Close();
         }
 
-        // Relatório: lista livros publicados após um ano informado.
         public static void ListarLivrosAposAno(int ano)
         {
             MySqlConnection cn = BdComum.FazerConexao();

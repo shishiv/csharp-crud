@@ -1,4 +1,3 @@
-// Programa principal do sistema de cadastro de livros de biblioteca.
 using System;
 using CSharpCrud.Models;
 
@@ -11,7 +10,7 @@ namespace CSharpCrud
             int opcao = -1;
             while (opcao != 0)
             {
-                // Exibe o menu principal
+                // Menu principal
                 Console.WriteLine("\n===== SISTEMA DE CADASTRO DE LIVROS =====");
                 Console.WriteLine("1 - Listar todos os livros");
                 Console.WriteLine("2 - Buscar livro por título");
@@ -23,7 +22,6 @@ namespace CSharpCrud
                 Console.WriteLine("0 - Sair");
                 Console.Write("Escolha uma opção: ");
 
-                // Tenta ler a opção do usuário, tratando possíveis erros de digitação
                 try
                 {
                     opcao = int.Parse(Console.ReadLine());
@@ -35,7 +33,6 @@ namespace CSharpCrud
                     continue;
                 }
 
-                // Executa a operação escolhida
                 switch (opcao)
                 {
                     case 1:
@@ -43,33 +40,36 @@ namespace CSharpCrud
                         break;
                     case 2:
                         Console.Write("Digite o título para buscar: ");
-                        string tituloBusca = Console.ReadLine();
+                        string tituloBusca = Console.ReadLine() ?? "";
                         Livro.BuscarLivro(tituloBusca);
                         break;
                     case 3:
+                        // Cadastro de novo livro com validação de ano
                         Livro novo = new Livro();
                         Console.Write("Título: ");
-                        novo.Titulo = Console.ReadLine();
+                        novo.Titulo = Console.ReadLine() ?? "";
                         Console.Write("Autor: ");
-                        novo.Autor = Console.ReadLine();
+                        novo.Autor = Console.ReadLine() ?? "";
                         Console.Write("Editora: ");
-                        novo.Editora = Console.ReadLine();
+                        novo.Editora = Console.ReadLine() ?? "";
                         Console.Write("Ano de publicação: ");
-                        if (!int.TryParse(Console.ReadLine(), out int ano) || ano <= 0)
+                        string anoStr = Console.ReadLine() ?? "";
+                        if (!int.TryParse(anoStr, out int ano) || ano <= 0)
                         {
                             Console.WriteLine("Ano inválido! Operação cancelada.");
                             break;
                         }
                         novo.Ano = ano;
                         Console.Write("ISBN: ");
-                        novo.ISBN = Console.ReadLine();
+                        novo.ISBN = Console.ReadLine() ?? "";
                         Console.Write("Gênero: ");
-                        novo.Genero = Console.ReadLine();
+                        novo.Genero = Console.ReadLine() ?? "";
                         Livro.InserirLivro(novo);
                         break;
                     case 4:
                         Console.Write("Digite o id do livro a alterar: ");
-                        if (!int.TryParse(Console.ReadLine(), out int idAlt) || idAlt <= 0)
+                        string idAltStr = Console.ReadLine() ?? "";
+                        if (!int.TryParse(idAltStr, out int idAlt) || idAlt <= 0)
                         {
                             Console.WriteLine("Id inválido! Operação cancelada.");
                             break;
@@ -78,7 +78,8 @@ namespace CSharpCrud
                         break;
                     case 5:
                         Console.Write("Digite o id do livro a excluir: ");
-                        if (!int.TryParse(Console.ReadLine(), out int idExc) || idExc <= 0)
+                        string idExcStr = Console.ReadLine() ?? "";
+                        if (!int.TryParse(idExcStr, out int idExc) || idExc <= 0)
                         {
                             Console.WriteLine("Id inválido! Operação cancelada.");
                             break;
@@ -90,7 +91,8 @@ namespace CSharpCrud
                         break;
                     case 7:
                         Console.Write("Digite o ano: ");
-                        if (!int.TryParse(Console.ReadLine(), out int anoRel) || anoRel <= 0)
+                        string anoRelStr = Console.ReadLine() ?? "";
+                        if (!int.TryParse(anoRelStr, out int anoRel) || anoRel <= 0)
                         {
                             Console.WriteLine("Ano inválido! Operação cancelada.");
                             break;
